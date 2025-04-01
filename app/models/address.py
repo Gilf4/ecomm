@@ -1,14 +1,15 @@
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from base import intpk, str255
 
 from .base import Base
 
 class Address(Base):
     __tablename__ = 'address'
     
-    address_id: Mapped[int] = mapped_column(primary_key=True)
-    city: Mapped[str] = mapped_column(String(255))
-    street: Mapped[str] = mapped_column(String(255))
+    address_id: Mapped[intpk]
+    city: Mapped[str255]
+    street: Mapped[str255]
     house: Mapped[str] = mapped_column(String(50))
     country_id: Mapped[int] = mapped_column(ForeignKey('countries.country_id', ondelete='CASCADE'))
     
