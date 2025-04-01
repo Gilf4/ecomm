@@ -1,8 +1,7 @@
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from base import intpk, str255
 
-from .base import Base
+from .base import Base, intpk, str255
 
 class Address(Base):
     __tablename__ = 'address'

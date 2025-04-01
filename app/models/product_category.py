@@ -1,8 +1,6 @@
-from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from base import intpk, str255
 
-from .base import Base
+from .base import Base, intpk, str255
 
 class ProductCategory(Base):
     __tablename__ = 'product_categories'

@@ -1,8 +1,7 @@
 from sqlalchemy import ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from base import intpk, str255
 
-from .base import Base
+from .base import Base, intpk
 from .attribute import Attribute
 from .product import Product
 

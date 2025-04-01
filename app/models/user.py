@@ -1,8 +1,7 @@
 from sqlalchemy import String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from base import intpk, str255
 
-from .base import Base
+from .base import Base, intpk, str255
 from .address import Address
 
 class User(Base):

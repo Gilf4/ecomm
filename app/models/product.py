@@ -1,8 +1,7 @@
-from sqlalchemy import ForeignKey, Numeric, String, Text
+from sqlalchemy import ForeignKey, Numeric, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from base import intpk, str255
 
-from .base import Base
+from .base import Base, intpk, str255
 from .shopping_cart_item import ShoppingCartItem
 
 class Product(Base):

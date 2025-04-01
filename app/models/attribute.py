@@ -1,8 +1,7 @@
 from sqlalchemy import String, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from base import intpk, str255
 
-from .base import Base
+from .base import Base, intpk, str255
 
 class Attribute(Base):
     __tablename__ = 'attributes'

@@ -1,8 +1,7 @@
-from sqlalchemy import ForeignKey, Integer
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from base import intpk
 
-from .base import Base
+from .base import Base, intpk
 
 class ShoppingCartItem(Base):
     __tablename__ = 'shopping_cart_items'
