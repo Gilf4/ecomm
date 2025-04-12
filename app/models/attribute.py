@@ -1,7 +1,12 @@
 from sqlalchemy import String, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .attribute_value import AttributeValue
 
 from .base import Base, intpk, str255
+
 
 class Attribute(Base):
     __tablename__ = 'attributes'

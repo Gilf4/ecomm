@@ -1,7 +1,13 @@
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .country import Country
+    from .user import User
 
 from .base import Base, intpk, str255
+
 
 class Address(Base):
     __tablename__ = 'address'

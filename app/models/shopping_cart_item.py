@@ -1,5 +1,10 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .product import Product
+    from .shopping_cart import ShoppingCart
 
 from .base import Base, intpk
 

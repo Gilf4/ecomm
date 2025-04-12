@@ -1,5 +1,9 @@
 from sqlalchemy import String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .shopping_cart import ShoppingCart
 
 from .base import Base, intpk, str255
 from .address import Address

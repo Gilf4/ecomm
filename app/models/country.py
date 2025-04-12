@@ -1,6 +1,11 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .address import Address
 
 from .base import Base, intpk, str255
+
 
 class Country(Base):
     __tablename__ = 'countries'
