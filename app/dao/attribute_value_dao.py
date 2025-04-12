@@ -13,6 +13,11 @@ class AttributeValueDAO(BaseDAO):
             AttributeValue.product_id == product_id
         ).all()
     
+    def delete_by_product(self, product_id: int) -> int:
+        """Удаляет все атрибуты продукта. Возвращает количество удаленных."""
+        count = self.session.query(AttributeValue).filter(AttributeValue.product_id == product_id).delete()
+        return count
+
     def get_for_attribute(self, attribute_id) -> list[AttributeValue]:
         """Получение всех значений для конкретного атрибута"""
         pass

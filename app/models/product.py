@@ -20,7 +20,7 @@ class Product(Base):
     price: Mapped[float] = mapped_column(Numeric(10, 2))
     
     category: Mapped['ProductCategory'] = relationship(back_populates='products')
-    attribute_values: Mapped[list['AttributeValue']] = relationship(back_populates='product')
+    attribute_values: Mapped[list['AttributeValue']] = relationship(back_populates='product', cascade="all, delete-orphan")
     shopping_cart_items: Mapped[list['ShoppingCartItem']] = relationship(back_populates='product')
 
     def __repr__(self):
