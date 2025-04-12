@@ -12,16 +12,12 @@ class ProductCategoryDAO(BaseDAO):
             ProductCategory.category_name == name
         ).first()
 
-    def get_or_create_by_name(self, name: str) -> tuple[ProductCategory, bool]:
-        """
-        Получает или создает категорию по имени.
-        Возвращает кортеж: (категория, была_ли_создана)
-        """
+    def get_or_create_by_name(self, name: str) -> ProductCategory:
+        """Возвращает категорию или создает новую."""
         category = self.find_by_name(name)
-        if category:
-            return category, False
-        
-        return self.create(category_name=name), True
+        if not category:
+            category = self.create(category_name=name)
+        return category
     
     def get_with_products(self, category_id) -> ProductCategory | None:
         """Получение категории со всеми продуктами"""

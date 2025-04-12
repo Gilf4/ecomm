@@ -10,6 +10,7 @@ def init_db():
     engine = create_engine(DATABASE_URL)
     Session = sessionmaker(bind=engine)
     session = Session()
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
     return engine, session
 
@@ -88,34 +89,40 @@ def print_product_attributes(session, product_id):
     for val in values:
         print(f"{val.attribute.attribute_name}: {val.value}")
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
+#     engine, session = init_db()
+    
+#     try:
+#         cart_dao = ShoppingCartDAO(session)
+#         item_dao = ShoppingCartItemDAO(session)
+
+#         cart = cart_dao.get_user_cart(1)
+#         cart_dao.add_to_cart(cart.user_id, 4)
+#         total = cart_dao.calculate_total(cart.cart_id)
+
+
+#         if cart:
+#             for item in cart.items:
+#                 print(f"{item.product.product_name}: {item.quantity} x {item.product.price}")
+#             print(f"Total: {total}")
+#         else:
+#             print("У пользователя пока нет корзины.")
+        
+#     except Exception as e:
+#         print(f"Ошибка: {e}")
+#         session.rollback()
+#     finally:
+#         session.close()
+from cli import ECommerceCLI
+
+def main():
     engine, session = init_db()
     
-    try:
-        cart_dao = ShoppingCartDAO(session)
-        item_dao = ShoppingCartItemDAO(session)
+    cli = ECommerceCLI(session)
+    cli.start()
 
-        cart = cart_dao.get_user_cart(1)
-        cart_dao.add_to_cart(cart.user_id, 4)
-        total = cart_dao.calculate_total(cart.cart_id)
-
-
-        if cart:
-            for item in cart.items:
-                print(f"{item.product.product_name}: {item.quantity} x {item.product.price}")
-            print(f"Total: {total}")
-        else:
-            print("У пользователя пока нет корзины.")
-
-
-
-        
-    except Exception as e:
-        print(f"Ошибка: {e}")
-        session.rollback()
-    finally:
-        session.close()
-
+if __name__ == "__main__":
+    main()
 
 
 
