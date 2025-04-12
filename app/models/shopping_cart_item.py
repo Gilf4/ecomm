@@ -18,3 +18,7 @@ class ShoppingCartItem(Base):
     
     product: Mapped['Product'] = relationship(back_populates='shopping_cart_items')
     cart: Mapped['ShoppingCart'] = relationship(back_populates='items')
+
+    def __repr__(self):
+        return (f"<CartItem(id={self.item_id}, product={self.product.product_name}, "
+                f"quantity={self.quantity}, price={self.product.price})>")

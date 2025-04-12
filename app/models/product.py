@@ -22,3 +22,6 @@ class Product(Base):
     category: Mapped['ProductCategory'] = relationship(back_populates='products')
     attribute_values: Mapped[list['AttributeValue']] = relationship(back_populates='product')
     shopping_cart_items: Mapped[list['ShoppingCartItem']] = relationship(back_populates='product')
+
+    def __repr__(self):
+        return f"<Product(id={self.product_id}, name='{self.product_name}', price={self.price})>"
