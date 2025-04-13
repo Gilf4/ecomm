@@ -50,11 +50,3 @@ class ProductDAO(BaseDAO):
     def get_by_category(self, category_id) -> list[Product]:
         """Фильтрация по категории"""
         pass
-    
-    def get_by_price_range(self, min_price, max_price) -> list[Product]:
-        """Фильтрация по диапазону цен"""
-        pass
-    
-    def get_with_attributes(self, product_id) -> Product | None:
-        """Получение продукта со всеми атрибутами"""
-        pass

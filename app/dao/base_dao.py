@@ -44,4 +44,3 @@ class BaseDAO:
             self.session.commit()
             return True
         return False
-

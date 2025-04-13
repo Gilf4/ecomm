@@ -15,7 +15,7 @@ class ShoppingCart(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey('users.user_id', ondelete='CASCADE'))
     
     user: Mapped['User'] = relationship(back_populates='shopping_carts')
-    items: Mapped[list['ShoppingCartItem']] = relationship(back_populates='cart')
+    items: Mapped[list['ShoppingCartItem']] = relationship(back_populates='cart', cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<ShoppingCart(id={self.cart_id}, user_id={self.user_id}, items={len(self.items)})>"

@@ -17,7 +17,7 @@ class ShoppingCartDAO(BaseDAO):
         ).first()
     
     def add_to_cart(self, user_id, product_id) -> ShoppingCartItem:
-        """Основной метод добавления товара в корзину"""
+        """Добавления товара в корзину"""
         cart = self.get_user_cart(user_id)
         
         if not cart:

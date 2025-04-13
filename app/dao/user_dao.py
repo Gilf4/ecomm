@@ -16,9 +16,9 @@ class UserDAO(BaseDAO):
     def get_with_cart(self, user_id) -> User | None:
         """Получение пользователя с корзиной"""
         return self.session.query(User).options(
-            joinedload(User.shopping_carts)  # Жадная загрузка корзин
-            .joinedload(ShoppingCart.items)  # Загрузка элементов корзины
-            .joinedload(ShoppingCartItem.product)  # Загрузка связанных продуктов
+            joinedload(User.shopping_carts)
+            .joinedload(ShoppingCart.items)
+            .joinedload(ShoppingCartItem.product)
         ).get(user_id)
     
     def add_address(self, user_id, address_id) -> None:

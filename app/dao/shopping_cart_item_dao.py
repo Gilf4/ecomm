@@ -6,7 +6,7 @@ class ShoppingCartItemDAO(BaseDAO):
     def __init__(self, session: Session):
         super().__init__(session, ShoppingCartItem)
 
-    def find_item(self, cart_id: int, product_id: int) -> ShoppingCartItem | None:
+    def find_item(self, cart_id, product_id) -> ShoppingCartItem | None:
         """Поиск конкретного товара в корзине"""
         return self.session.query(ShoppingCartItem).filter(
             ShoppingCartItem.cart_id == cart_id,
@@ -21,7 +21,7 @@ class ShoppingCartItemDAO(BaseDAO):
             quantity=quantity
         )
     
-    def increase_quantity(self, item_id: int, amount = 1) -> ShoppingCartItem | None:
+    def increase_quantity(self, item_id, amount = 1) -> ShoppingCartItem | None:
         """Увеличение количества товара"""
         item = self.get_by_id(item_id)
         if item:
