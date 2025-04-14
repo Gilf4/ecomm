@@ -2,8 +2,6 @@ from models import Address
 from sqlalchemy.orm import Session
 from .base_dao import BaseDAO
 
-
-
 class AddressDAO(BaseDAO):
     def __init__(self, session: Session):
         super().__init__(session, Address)

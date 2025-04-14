@@ -46,7 +46,3 @@ class ProductDAO(BaseDAO):
             category_id=category.category_id,
             **kwargs
         )
-    
-    def get_by_category(self, category_id) -> list[Product]:
-        """Фильтрация по категории"""
-        pass

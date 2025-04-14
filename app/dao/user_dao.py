@@ -21,6 +21,12 @@ class UserDAO(BaseDAO):
             .joinedload(ShoppingCartItem.product)
         ).get(user_id)
     
+    def authenticate(self, email: str, password: str) -> User | None:
+        user = self.find_by_email(email)
+        if user and user.password_hash == password:
+            return user
+        return None
+    
     def add_address(self, user_id, address_id) -> None:
         """Добавление адреса пользователю"""
         pass

@@ -20,3 +20,21 @@ class CreateUserCommand(Command):
     
     def description(self):
         return f"Created user {self.user_data['email']}"
+    
+class LoginCommand(Command):
+    def __init__(self, session, email, password):
+        self.session = session
+        self.email = email
+        self.password = password
+        self.user = None
+
+    def execute(self):
+        user_dao = UserDAO(self.session)
+        self.user = user_dao.authenticate(self.email, self.password)
+        return self.user
+
+    def undo(self):
+        pass
+
+    def description(self):
+        return f"User login: {self.email}"
