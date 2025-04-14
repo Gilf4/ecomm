@@ -32,7 +32,7 @@ class ProductDAO(BaseDAO):
         values = AttributeValueDAO(self.session).get_for_product(product_id)
         return {val.attribute.attribute_name: val.value for val in values}
     
-    def create_with_category(self, product_name: str, price: float, category_name: str, **kwargs) -> Product:
+    def create_with_category(self, product_name, price, category_name, **kwargs) -> Product:
         """
         Создает продукт с категорией по имени.
         Если категория не существует - создает ее.

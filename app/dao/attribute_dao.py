@@ -6,12 +6,8 @@ class AttributeDAO(BaseDAO):
     def __init__(self, session: Session):
         super().__init__(session, Attribute)
     
-    def find_by_name(self, name) -> Attribute | None:
+    def find_by_name(self, name) -> Attribute:
         """Поиск атрибута по названию"""
         return self.session.query(Attribute).filter(
             Attribute.attribute_name == name
         ).first()
-    
-    def get_with_values(self, attribute_id) -> Attribute | None:
-        """Получение атрибута со всеми значениями"""
-        pass

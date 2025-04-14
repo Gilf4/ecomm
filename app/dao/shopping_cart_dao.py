@@ -7,7 +7,7 @@ class ShoppingCartDAO(BaseDAO):
     def __init__(self, session: Session):
         super().__init__(session, ShoppingCart)
     
-    def get_user_cart(self, user_id: int) -> ShoppingCart | None:
+    def get_user_cart(self, user_id) -> ShoppingCart:
         """Получает корзину пользователя со всеми товарами"""
         return self.session.query(ShoppingCart).options(
             joinedload(ShoppingCart.items)
@@ -33,7 +33,7 @@ class ShoppingCartDAO(BaseDAO):
         
         return item
     
-    def calculate_total(self, cart_id) -> float:
+    def calculate_total(self, cart_id):
         """Расчет общей стоимости корзины"""
         cart = self.session.query(ShoppingCart).options(
             joinedload(ShoppingCart.items)

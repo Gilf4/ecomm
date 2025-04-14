@@ -18,7 +18,3 @@ class ProductCategoryDAO(BaseDAO):
         if not category:
             category = self.create(category_name=name)
         return category
-    
-    def get_with_products(self, category_id) -> ProductCategory | None:
-        """Получение категории со всеми продуктами"""
-        pass

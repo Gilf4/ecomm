@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class PaymentStrategy(ABC):
     @abstractmethod
-    def pay(self, amount, **kwargs) -> bool:
+    def pay(self, amount, **kwargs):
         pass
 
 class CreditCardPayment(PaymentStrategy):

@@ -8,8 +8,6 @@ class BaseDAO:
     def create(self, *, instance=None, **kwargs):
         """Создание новой записи"""
         if instance is not None:
-            if not isinstance(instance, self.model):
-                raise ValueError(f"Expected instance of {self.model.__name__}")
             obj = instance
         else:
             obj = self.model(**kwargs)

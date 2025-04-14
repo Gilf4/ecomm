@@ -3,6 +3,7 @@ from .commands.user_commands import CreateUserCommand, LoginCommand
 from .commands.cart_commands import AddToCartCommand
 from .commands.create_product import CreateProductCommand
 from .strategy.strategies import PaymentContext, CreditCardPayment, SBPPayment, CashPayment
+from .statePattern.states import Order
 from dao import ShoppingCartDAO
 
 
@@ -12,6 +13,7 @@ class ECommerceCLI:
         self.dispatcher = CommandDispatcher()
         self.current_user = None
         self.cart_dao = ShoppingCartDAO(session)
+        self.orders = [] 
 
     def start(self):
         self._welcome_screen()
@@ -47,9 +49,10 @@ class ECommerceCLI:
             print("1. Add item to Cart")
             print("2. Create Product")
             print("3. Checkout")
-            print("4. Undo Last Action")
-            print("5. View History")
-            print("6. Logout")
+            print("4. Track Order")
+            print("5. Undo Last Action")
+            print("6. View History")
+            print("7. Logout")
             
             choice = input("Select option: ")
             
@@ -61,10 +64,12 @@ class ECommerceCLI:
                 elif choice == '3':
                     self._checkout_flow()
                 elif choice == '4':
-                    self._undo_last_action()
+                    self._track_order_flow()
                 elif choice == '5':
-                    self._view_history()
+                    self._undo_last_action()
                 elif choice == '6':
+                    self._view_history()
+                elif choice == '7':
                     self.current_user = None
                     print("Logged out.")
                     self._welcome_screen()
@@ -116,11 +121,16 @@ class ECommerceCLI:
     def _checkout_flow(self):
         cart = self.cart_dao.get_user_cart(self.current_user.user_id)
         if not cart:
-            print("Cart is empty or not found.")
+            print("Ваша корзина пуста!")
             return
         
+        print("\nВаш заказ:")
+        for item in cart.items:
+            print(f"{item.product.product_name} x{item.quantity} - ${item.product.price * item.quantity:.2f}")
+        
         total = self.cart_dao.calculate_total(cart.cart_id)
-        print(f"\nTotal: ${total:.2f}")
+        print(f"\nИтого к оплате: ${total}")
+
         print("Select payment method:")
         print("1. Credit Card")
         print("2. SBP")
@@ -148,10 +158,48 @@ class ECommerceCLI:
             print("Invalid choice")
             return
         
+        payment_successful = False
+
         if result:
             print("Payment successful!")
+            payment_successful = True
         else:
             print("Payment failed")
+        
+        if payment_successful:
+            order_id = len(self.orders) + 1
+            new_order = Order(order_id, total)
+            self.orders.append(new_order)
+
+            for item in cart.items:
+                self.session.delete(item)
+            self.session.commit()
+            
+            print(f"\nОплата прошла успешно! Номер вашего заказа: #{order_id}")
+
+    def _track_order_flow(self):
+        if not self.orders:
+            print("У вас нет активных заказов")
+            return
+        
+        print("\nВаши заказы:")
+        for order in self.orders:
+            print(f"#{order.order_id} - {order.get_status()} - ${order.total}")
+        
+        order_id = input("Введите номер заказа для отслеживания: ")
+        try:
+            order_id = int(order_id)
+            order = next((o for o in self.orders if o.order_id == order_id), None)
+
+            if not order:
+                print(f"Заказ #{order_id} не найден. Проверьте номер заказа.")
+            
+            if order:
+                order.track(interval=3)
+            else:
+                print("Заказ не найден")
+        except ValueError:
+            print("Некорректный номер заказа")
 
     def _undo_last_action(self):
         if self.dispatcher.undo():
