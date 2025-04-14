@@ -16,13 +16,13 @@ class ECommerceCLI:
         self.orders = [] 
 
     def start(self):
-        self._welcome_screen()
-        if self.current_user:
-            self._main_menu()
-
-    def _welcome_screen(self):
         while True:
-            print("\nWelcome to E-Commerce CLI")
+            self.start_screen()
+            if self.current_user:
+                self.main_menu()
+
+    def start_screen(self):
+        while True:
             print("1. Create User")
             print("2. Login")
             print("3. Exit")
@@ -30,9 +30,9 @@ class ECommerceCLI:
 
             try:
                 if choice == '1':
-                    self._create_user_flow()
+                    self.create_user_flow()
                 elif choice == '2':
-                    self._login_flow()
+                    self.login_flow()
                     if self.current_user:
                         print(f"Logged in as {self.current_user.email}")
                         return
@@ -43,9 +43,9 @@ class ECommerceCLI:
             except Exception as e:
                 print(f"Error: {str(e)}")
 
-    def _main_menu(self):
+    def main_menu(self):
         while True:
-            print(f"\nMain Menu — Logged in as {self.current_user.email}")
+            print(f"\nLogged as {self.current_user.email}")
             print("1. Add item to Cart")
             print("2. Create Product")
             print("3. Checkout")
@@ -58,28 +58,27 @@ class ECommerceCLI:
             
             try:
                 if choice == '1':
-                    self._add_to_cart_flow()
+                    self.add_to_cart_flow()
                 elif choice == '2':
-                    self._create_product_flow()
+                    self.create_product_flow()
                 elif choice == '3':
-                    self._checkout_flow()
+                    self.checkout_flow()
                 elif choice == '4':
-                    self._track_order_flow()
+                    self.track_order_flow()
                 elif choice == '5':
-                    self._undo_last_action()
+                    self.undo_last_action()
                 elif choice == '6':
-                    self._view_history()
+                    self.view_history()
                 elif choice == '7':
                     self.current_user = None
                     print("Logged out.")
-                    self._welcome_screen()
-                    break
+                    return
                 else:
                     print("Invalid choice")
             except Exception as e:
                 print(f"Error: {str(e)}")
 
-    def _create_user_flow(self):
+    def create_user_flow(self):
         user_data = {
             'email': input("Email: "),
             'password_hash': input("Password: "),
@@ -88,9 +87,9 @@ class ECommerceCLI:
         }
         command = CreateUserCommand(self.session, user_data)
         self.current_user = command.execute()
-        print("User created and logged in successfully")
+        print("User created")
 
-    def _login_flow(self):
+    def login_flow(self):
         email = input("Email: ")
         password = input("Password: ")
         command = LoginCommand(self.session, email, password)
@@ -100,7 +99,7 @@ class ECommerceCLI:
         else:
             print("Login failed")
 
-    def _add_to_cart_flow(self):
+    def add_to_cart_flow(self):
         product_id = int(input("Product ID: "))
         command = AddToCartCommand(self.session, self.current_user.user_id, product_id)
         result = self.dispatcher.execute(command)
@@ -109,27 +108,27 @@ class ECommerceCLI:
         else:
             print("Failed to add item")
 
-    def _create_product_flow(self):
+    def create_product_flow(self):
         command = CreateProductCommand(self.session)
         product = self.dispatcher.execute(command)
         if product:
-            print(f"Product created! ID: {product.product_id}")
+            print(f"Product created ID: {product.product_id}")
             print("Attributes:")
             for attr in product.attribute_values:
                 print(f"  {attr.attribute.attribute_name}: {attr.value}")
 
-    def _checkout_flow(self):
+    def checkout_flow(self):
         cart = self.cart_dao.get_user_cart(self.current_user.user_id)
         if not cart:
-            print("Ваша корзина пуста!")
+            print("Card empty")
             return
         
-        print("\nВаш заказ:")
+        print("\nOrder:")
         for item in cart.items:
-            print(f"{item.product.product_name} x{item.quantity} - ${item.product.price * item.quantity:.2f}")
+            print(f"{item.product.product_name} x{item.quantity} - ₽{item.product.price * item.quantity:.2f}")
         
         total = self.cart_dao.calculate_total(cart.cart_id)
-        print(f"\nИтого к оплате: ${total}")
+        print(f"\nTotal: ₽{total}")
 
         print("Select payment method:")
         print("1. Credit Card")
@@ -144,7 +143,7 @@ class ECommerceCLI:
             context.set_strategy(CreditCardPayment())
             card_data = {
                 'card_number': input("Card number: "),
-                'expiry_date': input("Expiry (MM/YY): "),
+                'expiry_date': input("(MM/YY): "),
                 'cvv': input("CVV: ")
             }
             result = context.execute_payment(total, **card_data)
@@ -158,15 +157,13 @@ class ECommerceCLI:
             print("Invalid choice")
             return
         
-        payment_successful = False
-
         if result:
             print("Payment successful!")
-            payment_successful = True
         else:
             print("Payment failed")
+            return
         
-        if payment_successful:
+        if result:
             order_id = len(self.orders) + 1
             new_order = Order(order_id, total)
             self.orders.append(new_order)
@@ -175,39 +172,40 @@ class ECommerceCLI:
                 self.session.delete(item)
             self.session.commit()
             
-            print(f"\nОплата прошла успешно! Номер вашего заказа: #{order_id}")
+            print(f"\nНомер заказа: #{order_id}")
 
-    def _track_order_flow(self):
+    def track_order_flow(self):
         if not self.orders:
-            print("У вас нет активных заказов")
+            print("Нет активных заказов")
             return
         
-        print("\nВаши заказы:")
+        print("\n Заказы:")
         for order in self.orders:
             print(f"#{order.order_id} - {order.get_status()} - ${order.total}")
         
         order_id = input("Введите номер заказа для отслеживания: ")
-        try:
-            order_id = int(order_id)
-            order = next((o for o in self.orders if o.order_id == order_id), None)
+        order_id = int(order_id)
 
-            if not order:
-                print(f"Заказ #{order_id} не найден. Проверьте номер заказа.")
-            
-            if order:
-                order.track(interval=3)
-            else:
-                print("Заказ не найден")
-        except ValueError:
-            print("Некорректный номер заказа")
+        order = None
+        for o in self.orders:
+            if o.order_id == order_id:
+                order = o
+                break
+        
+        if order:
+            order.track(interval=3)
+        else:
+            print(f"Заказ #{order_id} не найден.")
 
-    def _undo_last_action(self):
+
+    def undo_last_action(self):
         if self.dispatcher.undo():
             print("Last action undone")
         else:
             print("Nothing to undo")
 
-    def _view_history(self):
+    def view_history(self):
         print("\nHistory of actions:")
-        for i, desc in enumerate(self.dispatcher.get_history(), 1):
-            print(f"{i}. {desc}")
+        history = self.dispatcher.get_history()
+        for i in range(len(history)):
+            print(f"{i+1}. {history[i]}")

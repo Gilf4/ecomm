@@ -15,7 +15,6 @@ class DatabaseConfig:
         return f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.name}"
 
 def load_db_config() -> DatabaseConfig:
-    """Загружает конфигурацию БД из .env файла или переменных окружения"""
     load_dotenv()
     
     return DatabaseConfig(

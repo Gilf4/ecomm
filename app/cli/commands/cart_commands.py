@@ -70,4 +70,4 @@ class AddToCartCommand(Command):
             raise ValueError(f"Undo failed: {str(e)}")
 
     def description(self):
-        return f"Added product {self.product_id} to user {self.user_id}'s cart"
+        return f"Added product {self.product_id} to user {self.user_id} cart"
